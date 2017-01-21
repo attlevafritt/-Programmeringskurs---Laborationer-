@@ -99,7 +99,7 @@ Annars beräknas talet av
 (pascal 15 2)
 (pascal 15 3)
         
-
+HHDHDHDHD
 
 
 
