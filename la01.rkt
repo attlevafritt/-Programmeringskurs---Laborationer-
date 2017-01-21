@@ -98,8 +98,15 @@ Annars beräknas talet av
 
 (pascal 15 2)
 (pascal 15 3)
-        
 
+;;UPPGIFT 5 
+#|
+Substitutionsmodellen för (pascal 4 3): 
+>(pascal 4 3)
+> (+ (pascal (- 4 1) (- 3 1)) (pascal (- 4 1) 3)))))
+>>(+ (pascal (3 2)) (pascal (3 3)))
+>> (+ 3 1)
+<< 4 |#
 
 
 
