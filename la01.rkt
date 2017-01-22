@@ -126,7 +126,9 @@ Substitutionsmodellen för (pascal 4 3):
         ;värdet adderas med det "gamla result" för att bilda "det nya result"  
         (sum-of-digits-iter (but-last-digit n) (+ (last-digit n) result)))))
         
- ;Hjälpproceduren "number-of-digits"
+
+;;Hjälpproceduren "number-of-digits"
+
 (define number-of-digits
   (lambda (n)
   ;; börjar på 0, vi lägger också till 1, för att but-last-digit (n)=0, när det är en siffra kvar att beräkna. 
@@ -138,6 +140,15 @@ Substitutionsmodellen för (pascal 4 3):
         counter
         ;;ngt som räknar antalet varv som körs. Processen ska vara last  
         (number-of-digits-iter (but-last-digit n) (+ counter 1)))))
-       
+
+(define divisible?
+  (lambda (n d)
+    ; Det är endast delbart med ngt när resten är 0. 
+    (if (= (remainder n d) 0)
+        #t
+        #f)))
+
+(divisible? 3 4)
+
 
 
