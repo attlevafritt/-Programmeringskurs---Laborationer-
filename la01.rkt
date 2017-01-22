@@ -108,5 +108,22 @@ Substitutionsmodellen för (pascal 4 3):
 >> (+ 3 1)
 << 4 |#
 
+;;UPPGIFT 6  
+
+(define sum-of-digits
+  (lambda (n)
+    (sum-of-digits-iter n 0))) ;börjar på 0, där result=0.
+
+
+(define sum-of-digits-iter
+  (lambda (n result)
+     ;;För (but-last-digit a), där a är ett en-siffrigt tal returneras alltid 0. Därmed kan detta vara vår terminalfall.
+    (if (= (but-last-digit n) 0) 
+        ;; I slutet tas sista siffran + result. Result är summan av varje siffra som fås när last-digit anropas. 
+        (+ result (last-digit n)) 
+        ;; Så länge talet består av fler siffror än 1 görs beräknig. Alla siffror än det sista isoleras i varje beräkning, samt det sista
+        ;värdet adderas med det "gamla result" för att bilda "det nya result"  
+        (sum-of-digits-iter (but-last-digit n) (+ (last-digit n) result)))))
+       
 
 
