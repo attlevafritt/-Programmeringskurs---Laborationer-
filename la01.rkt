@@ -151,4 +151,11 @@ Substitutionsmodellen för (pascal 4 3):
 (divisible? 3 4)
 
 
+;;Hjälpproceduren "random-from-to"
+
+(define random-from-to
+  (lambda (f t)
+    (random f t)))
+
+
 
