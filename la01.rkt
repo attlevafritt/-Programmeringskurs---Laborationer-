@@ -110,6 +110,7 @@ Substitutionsmodellen för (pascal 4 3):
 
 ;;UPPGIFT 6  
 
+;;Hjälpproceduren "sum-of-digits"
 (define sum-of-digits
   (lambda (n)
     (sum-of-digits-iter n 0))) ;börjar på 0, där result=0.
@@ -124,6 +125,19 @@ Substitutionsmodellen för (pascal 4 3):
         ;; Så länge talet består av fler siffror än 1 görs beräknig. Alla siffror än det sista isoleras i varje beräkning, samt det sista
         ;värdet adderas med det "gamla result" för att bilda "det nya result"  
         (sum-of-digits-iter (but-last-digit n) (+ (last-digit n) result)))))
+        
+ ;Hjälpproceduren "number-of-digits"
+(define number-of-digits
+  (lambda (n)
+  ;; börjar på 0, vi lägger också till 1, för att but-last-digit (n)=0, när det är en siffra kvar att beräkna. 
+    (+ 1 (number-of-digits-iter n 0)))) 
+
+(define number-of-digits-iter
+  (lambda (n counter)
+    (if (= (but-last-digit n) 0)
+        counter
+        ;;ngt som räknar antalet varv som körs. Processen ska vara last  
+        (number-of-digits-iter (but-last-digit n) (+ counter 1)))))
        
 
 
