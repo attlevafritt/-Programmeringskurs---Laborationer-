@@ -157,5 +157,14 @@ Substitutionsmodellen för (pascal 4 3):
   (lambda (f t)
     (random f t)))
 
+;;UPPGIFT 7
+
+;;Proceduren "simple-sv-num?" 
+(define simple-sv-num?
+  (lambda (n d)
+  (if (= (remainder (sum-of-digitsJUNSKOG n) 10) 0)
+      #t
+      #f)))
+
 
 
