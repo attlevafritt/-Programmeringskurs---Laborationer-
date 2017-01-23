@@ -1,3 +1,4 @@
+
 #lang racket
 ;;Lab 1
 ;UPPGIFT 1
@@ -8,7 +9,6 @@
 #|SVAR: foo är ett definierat värde på 24, den returnerar
 därmed 24. Det är ingen procedur och kan därmed inte 
 evalueras som ett (d.v.s. "(foo)" ger error). 
-
 foobar är en definierad procedure, 
 som tar in ett tomt argument, men har i sig inget
 värde i sig, därmed kan inte uttrycket "foobar" utan 
@@ -115,7 +115,14 @@ Substitutionsmodellen för (pascal 4 3):
   (lambda (n)
     (sum-of-digits-iter n 0))) ;börjar på 0, där result=0.
 
+(define but-last-digit 
+  (lambda (n)
+    (remainder (n 10))))
 
+(define last-digit 
+  (lambda (n)
+    (quotient (n 10))))
+  
 (define sum-of-digits-iter
   (lambda (n result)
      ;;För (but-last-digit a), där a är ett en-siffrigt tal returneras alltid 0. Därmed kan detta vara vår terminalfall.
@@ -153,18 +160,50 @@ Substitutionsmodellen för (pascal 4 3):
 
 ;;Hjälpproceduren "random-from-to"
 
-(define random-from-to
+(define random-from-to  
   (lambda (f t)
-    (random f t)))
+    (+ f (random t))))
+
 
 ;;UPPGIFT 7
 
 ;;Proceduren "simple-sv-num?" 
 (define simple-sv-num?
   (lambda (n d)
-  (if (= (remainder (sum-of-digitsJUNSKOG n) 10) 0)
+  (if (= (remainder (sum-of-digits n) 10) 0)
       #t
       #f)))
+
+;;Proceduren "make-simple-sv-num"
+
+(define make-6-numbers
+  (lambda ()
+  (if (and #t count)
+  (random-from-to 100000 999999)
+  "bla")))
+
+ 
+(define make-simple-sv-num 
+  (lambda (d)
+    (if (= (remainder (make-6-numbers) d) 0)
+        (make-6-numbers)
+       ((make-simple-sv-num d) (= #t count)))))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
