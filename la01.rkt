@@ -111,15 +111,17 @@ Substitutionsmodellen för (pascal 4 3):
 ;;UPPGIFT 6  
 
 ;;Hjälpproceduren "sum-of-digits"
+
+
 (define sum-of-digits
   (lambda (n)
     (sum-of-digits-iter n 0))) ;börjar på 0, där result=0.
 
-(define but-last-digit 
+(define last-digit 
   (lambda (n)
     (remainder n 10)))
 
-(define last-digit 
+(define but-last-digit 
   (lambda (n)
     (quotient n 10)))
   
@@ -168,39 +170,27 @@ Substitutionsmodellen för (pascal 4 3):
 ;;UPPGIFT 7
 
 ;;Proceduren "simple-sv-num?" 
-
 (define simple-sv-num?
   (lambda (n d)
-  (if (= (remainder (sum-of-digits n) 10) 0)
+  (if (= (remainder n d) 0)
       #t
       #f)))
 
 ;;Proceduren "make-simple-sv-num"
-(define make-simple-sv-sum
-  (lambda (n)
-    (let ([num (random-from-to 100000 900000)])
-    (if (= (remainder (sum-of-digits num) n) 0)
+(printf "here")
+(newline)
+
+(define make-6-numbers
+  (lambda () 
+  (random-from-to 100000 999999)))
+
+
+(define make-simple-sv-num 
+  (lambda (d)
+    (let ([num (random-from-to 100000 900000)]) 
+    (if (= (remainder (sum-of-digits num) d) 0)
         num
-        (make-simple-sv-sum n)))))
+        (make-simple-sv-num d)))))
 
-(make-simple-sv-sum 2)
-(simple-sv-sum? (make-simple-sv-sum 2) 2)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+(make-simple-sv-num 3)
+(simple-sv-num? (make-simple-sv-num 3) 3)
