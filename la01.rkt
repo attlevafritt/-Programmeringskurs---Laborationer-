@@ -117,11 +117,11 @@ Substitutionsmodellen för (pascal 4 3):
 
 (define but-last-digit 
   (lambda (n)
-    (remainder (n 10))))
+    (remainder n 10)))
 
 (define last-digit 
   (lambda (n)
-    (quotient (n 10))))
+    (quotient n 10)))
   
 (define sum-of-digits-iter
   (lambda (n result)
@@ -168,6 +168,7 @@ Substitutionsmodellen för (pascal 4 3):
 ;;UPPGIFT 7
 
 ;;Proceduren "simple-sv-num?" 
+
 (define simple-sv-num?
   (lambda (n d)
   (if (= (remainder (sum-of-digits n) 10) 0)
@@ -175,19 +176,15 @@ Substitutionsmodellen för (pascal 4 3):
       #f)))
 
 ;;Proceduren "make-simple-sv-num"
+(define make-simple-sv-sum
+  (lambda (n)
+    (let ([num (random-from-to 100000 900000)])
+    (if (= (remainder (sum-of-digits num) n) 0)
+        num
+        (make-simple-sv-sum n)))))
 
-(define make-6-numbers
-  (lambda ()
-  (if (and #t count)
-  (random-from-to 100000 999999)
-  "bla")))
-
- 
-(define make-simple-sv-num 
-  (lambda (d)
-    (if (= (remainder (make-6-numbers) d) 0)
-        (make-6-numbers)
-       ((make-simple-sv-num d) (= #t count)))))
+(make-simple-sv-sum 2)
+(simple-sv-sum? (make-simple-sv-sum 2) 2)
 
 
 
