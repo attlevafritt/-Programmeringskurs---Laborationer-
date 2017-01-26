@@ -194,3 +194,64 @@ Substitutionsmodellen för (pascal 4 3):
 
 (make-simple-sv-num 3)
 (simple-sv-num? (make-simple-sv-num 3) 3)
+
+;UPPGIFT 8 
+;Låt i vara antalet varv som körs när följande kod körs. 
+
+;(define make-cc-sv-num  (lambda ()
+    ;Vi behöver sats för Vi. 
+    ;Vi behöver kontroll av i genom antal varv. 
+    ;Om vi har ett i som kontrollerar om den är jämn eller inte. En variabel som växlar mellan 1 och 0. Låter i=1 vara jämnt tal. i=0 ursprung. (if (= i 1)
+       
+#|      
+(define i-each-time 
+  (lambda (i n) 
+    (if (> i 0)
+      (i-each-time (- i 1) (+ n 1))
+      (i-each-time (+ i 1) (+ n 1)))))|#
+
+
+
+    
+#|
+Test av "i-each-time"
+ 
+>(i-each-time 0 0 0)
+>(i-each-time 1 1 1)
+>(i-each-time 0 2 2)
+>(i-each-time 1 3 3)
+>(i-each-time 0 4 4)
+>(i-each-time 1 5 5)
+>(i-each-time 0 6 6)
+ 
+|#
+
+             
+(define double
+  (lambda (n)
+    (+ n n)))
+
+
+     
+(define make-cc-sv-num 
+  (lambda ()
+    (let ([stored (random-from-to 100000 900000)]) 
+        (if (= (remainder 
+                (+ (sum-of-digits-cc stored 0 0) 
+                   (quotient stored 100000))
+                10)
+               0)
+                stored
+            (make-cc-sv-num)))))
+
+(define sum-of-digits-cc
+  (lambda (n sum-to-next-last i)
+    (if (= (but-last-digit n) 0)
+        sum-to-next-last
+        (if (= i 1)
+            (sum-of-digits-cc (but-last-digit n) (+ (last-digit n) sum-to-next-last) 0)
+            (if (< (last-digit n) 5)
+                (sum-of-digits-cc (but-last-digit n) (+ (double (last-digit n)) sum-to-next-last) 1)
+                (sum-of-digits-cc (but-last-digit n) (+ (double (last-digit n)) 1 sum-to-next-last) 1))))))
+
+(make-cc-sv-num)
