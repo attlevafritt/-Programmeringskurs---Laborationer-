@@ -1,17 +1,14 @@
 #lang racket
+;;UPPGIFT 1
 
-(provide (all-defined-out))
-;;Lab 1
-;UPPGIFT 1
+(define foo (* 1 2 3 4))
+(define foobar (lambda () (* 1 2 3 4)))
 
-;(define foo (* 1 2 3 4))
-;(define foobar (lambda () (* 1 2 3 4)))
-
-#|SVAR: foo är ett definierat värde på 24, den returnerar
+#|SVAR: "foo" är en variabel som har ett värde på 24, den returnerar
 därmed 24. Det är ingen procedur och kan därmed inte 
 evalueras som ett (d.v.s. "(foo)" ger error). 
 foobar är en definierad procedure, 
-som tar in ett tomt argument, men har i sig inget
+som tar in ett tomt argument, men har inget
 värde i sig, därmed kan inte uttrycket "foobar" utan 
 parantes evalueras. När "foobar" skrivs in i interaktionsfönstret
 returneras därmed endast #<procedure: foobar>.|#
@@ -97,27 +94,32 @@ Substitutionsmodellen för (pascal 4 3):
 << 4 |#
 
 ;;UPPGIFT 6  
-
 ;;Hjälpproceduren "sum-of-digits"
 
-
+;En iterativ lösning.
 (define sum-of-digits
   (lambda (n)
-    (sum-of-digits-iter n 0))) ;börjar på 0, där result=0.
+    ;Beräkningen börjar på 0, d result= 0
+    (sum-of-digits-iter n 0)))   
 
+;;Hjälpproceduren "last-digit"
 (define last-digit 
   (lambda (n)
+    ;;Resten från delning med 10 blir vår sista siffra.
     (remainder n 10)))
 
+;;Hjälpproceduren "but-last-digit" 
 (define but-last-digit 
   (lambda (n)
+    ;Detta ger allt förutom den sista siffran. 
     (quotient n 10)))
   
+;;Hjälpproceduren "sum-of-digit-iter" 
 (define sum-of-digits-iter
   (lambda (n result)
      ;;För (but-last-digit a), där a är ett en-siffrigt tal returneras alltid 0. Därmed kan detta vara vår terminalfall.
     (if (= (but-last-digit n) 0) 
-        ;; I slutet tas sista siffran + result. Result är summan av varje siffra som fås när last-digit anropas. 
+        ;; I slutet tas sista siffran + "result". "result" är summan av varje siffra som fås när last-digit anropas. 
         (+ result (last-digit n))
         ;; Så länge talet består av fler siffror än 1 görs beräknig. Alla siffror än det sista isoleras i varje beräkning, samt det sista
         ;värdet adderas med det "gamla result" för att bilda "det nya result"  
@@ -125,10 +127,9 @@ Substitutionsmodellen för (pascal 4 3):
         
 
 ;;Hjälpproceduren "number-of-digits"
-
 (define number-of-digits
   (lambda (n)
-  ;; börjar på 0, vi lägger också till 1, för att but-last-digit (n)=0, när det är en siffra kvar att beräkna. 
+  ;;Vi börjar beräkningen på 0, vi lägger också till 1, för att (but-last-digit n) = 0, när det är en siffra kvar att beräkna. 
     (+ 1 (number-of-digits-iter n 0)))) 
 
 (define number-of-digits-iter
@@ -138,6 +139,7 @@ Substitutionsmodellen för (pascal 4 3):
         ;;ngt som räknar antalet varv som körs. Processen ska vara last  
         (number-of-digits-iter (but-last-digit n) (+ counter 1)))))
 
+;; Hjälpproceduren "divisible?" 
 (define divisible?
   (lambda (n d)
     ; Det är endast delbart med ngt när resten är 0. 
@@ -153,7 +155,6 @@ Substitutionsmodellen för (pascal 4 3):
     (+ f (random (- t (- f 1))))))
 
 ;;UPPGIFT 7
-
 ;;Proceduren "simple-sv-num?" 
 (define simple-sv-num?
   (lambda (n d)
@@ -163,7 +164,6 @@ Substitutionsmodellen för (pascal 4 3):
 
 
 ;;Proceduren "make-simple-sv-num"
-
 (define make-simple-sv-num 
   (lambda (d)
     (let ([num (random-from-to 100000 999999)]) 
@@ -176,23 +176,16 @@ Substitutionsmodellen för (pascal 4 3):
 
 
 ;UPPGIFT 8 
-;Låt i vara antalet varv som körs när följande kod körs. 
 
-;(define make-cc-sv-num  (lambda ()
-    ;Vi behöver sats för Vi. 
-    ;Vi behöver kontroll av i genom antal varv. 
-    ;Om vi har ett i som kontrollerar om den är jämn eller inte. En variabel som växlar mellan 1 och 0. Låter i=1 vara jämnt tal. i=0 ursprung. (if (= i 1)|#
-
- 
 ;En funktion som returnerar 2*siffran(i det sex-siffriga talet) 
 (define double
   (lambda (n)
     (+ n n)))
 
-;Huvudkoden som har funktionen "make-cc-sv-num" .
+;Huvudproceduren som heter "make-cc-sv-num" .
 (define make-cc-sv-num 
   (lambda ()
-    ;låt stored vara det genererande 6-siffriga talet.
+    ;låt "stored" vara det genererande 6-siffriga talet. Denna variabel binder ett talet som "random-from-to" genererar. 
     (let ([stored (random-from-to 100000 999999)]) 
         (if (divisible? 
         ;om summan av de viktade talen är delbart med 10 returneras det sex-siffriga-talet. Annars ska ett nytt tal genereras. 
@@ -205,19 +198,20 @@ Substitutionsmodellen för (pascal 4 3):
 
 
 (define sum-of-digits-cc
-  ;n är det sex-siffriga talet, sum-to-next-last är summan av de viktade siffrorna i talet (förutom det första), i håller koll på varannat tal (om det är jämnt eller ej). i börjar på 0.
-  (lambda (n sum-to-next-last i)
-    ;När det sista talet räknas så returneras sum-to-next-last.
+  ;"n" är det sex-siffriga talet, "sum-of-all-viktade-tal-but-first" är summan av de viktade siffrorna "i" talet (förutom det första), 
+  ;;"i" håller koll på varannat tal (om det är jämnt eller ej med andra ord). "i" börjar på 0.
+  (lambda (n sum-of-all-viktade-tal-but-first i)
+    ;När det sista talet räknas så returneras "sum-of-all-viktade-tal-but-first". 
     (if (= (but-last-digit n) 0)
-        sum-to-next-last
-        ;räkning börjar på det nästa talet (med position 2).
+       sum-of-all-viktade-tal-but-first
+        ;räkning börjar på det nästa talet (med position 2, det första talet ignoreras med andra ord).
         (if (= i 1)
-            ;funk. anropas igen med uppdaterad värde på argumenten.Förkortar från höger till vänster. 
-            (sum-of-digits-cc (but-last-digit n) (+ (last-digit n) sum-to-next-last) 0)
+            ;proceduren anropas igen med uppdaterad värde på argumenten.
+            (sum-of-digits-cc (but-last-digit n) (+ (last-digit n) sum-of-all-viktade-tal-but-first) 0)
             ;i=1 tolkas som att det är en jämn siffra. 
             (if (< (last-digit n) 5)
-                (sum-of-digits-cc (but-last-digit n) (+ (double (last-digit n)) sum-to-next-last) 1)
-                (sum-of-digits-cc (but-last-digit n) (+ (double (last-digit n)) 1 sum-to-next-last) 1))))))
+                (sum-of-digits-cc (but-last-digit n) (+ (double (last-digit n)) sum-of-all-viktade-tal-but-first) 1)
+                (sum-of-digits-cc (but-last-digit n) (+ (double (last-digit n)) 1 sum-of-all-viktade-tal-but-first) 1))))))
 
 
 ;;UPPGIFT 9
@@ -227,7 +221,7 @@ Substitutionsmodellen för (pascal 4 3):
 (define sum-and-apply-to-digits
   ;;Funktionen tar ett tal samt en procedur "digit-proc"
   (lambda (n digit-proc)
-    ;;Terminalfallet, när sista siffran evalueras ska "digit-proc" returneras.  
+    ;;Terminalfallet, när sista siffran evalueras är (number-of-digits n) = 1   
     (if (= (number-of-digits n) 1) 
         (digit-proc n 1)
         (+ (digit-proc (last-digit n) (number-of-digits n))
@@ -235,53 +229,72 @@ Substitutionsmodellen för (pascal 4 3):
 
 ;;DEL 9B
 
-;number-of-digits-high-order TESTNING OK! 
+;"number-of-digits-high-order" 
+
+;;En procedur för "number-of-digits-high-order". Varje position i ett tal ska endast returnera 1. 
 (define just-count-the-positions
   (lambda (num pos)
+  ;; Varje siffras position kommer endast returnera 1 (genom att vi delar med positionen) summan av dessa är antalet siffror i talet. 
   (+ (/ pos pos))))
 
 (define number-of-digits-high-order
   (lambda (number)
     (sum-and-apply-to-digits number just-count-the-positions)))
 
-;sum-of-digits-high-order Testning OK!
+;;"sum-of-digits-high-order"
+
+;; En procedur som enast returnerar varje enskild siffra i talet.   
 (define summering
   (lambda (number pos)
     number)) 
 
 (define sum-of-digits-high-order
   (lambda (number)
+    ;varje enskild siffra som returneras kommer att summeras ihop via "sum-and-apply-to-digits"
     (sum-and-apply-to-digits number summering)))
 
+;;"make-cc-sv-num-high-order"
+
+;;En procedur till "make-cc-sv-num-high-order"
 (define count-viktade-summa 
   (lambda (number pos)
+    ;Om positionen är jämn. 
     (if (divisible? pos 2)
+      ;; Om numret är större eller lika med 5, ska siffran dubbleras samt adderas med 1. Annars dubbleras den endast.  
       (if (>= number 5)
           (+ 1 (double number))
           (double number))
     number)))
 
-;;make-cc-sv-num-high-order Testning OK! 
 (define make-cc-sv-num-high-order 
   (lambda ()
+    ;number binds till ett slumpmässigt genererat tal. 
     (let ([number (random-from-to 100000 999999)])
+      ;;Talet måste vara delbart med 10,annars måste ett nytt tal genereras. 
       (if (divisible? (sum-and-apply-to-digits number count-viktade-summa) 10)
           number
           (make-cc-sv-num-high-order)))))
 
       
-;; UPPGIFT 10
-;;Generera 10-siffrigt tal
+;; UPPGIFT 10 
+#|Uppgiften nedan har gjorts enligt Luhn-algoritmen, se anvisningar i wikipedia.org: 
+https://sv.wikipedia.org/wiki/Personnummer_i_Sverige#Kontrollsiffran(2017-01-30)
+|#
 
-;En procedur som
+;Varannnat siffra i personnummret ska multipliceras med 2 och 1. Sedan ska allt summeras (notera att varje siffra ska summeras) 
+;;Det börjar med att det första (därmed alla tal med "udda" position) talet multipliceras med 2.  
 (define 2-or-1
   (lambda (number pos)
+    ;;varannan siffra multipliceras med 2, börjar från det andra siffran i talet. 
     (if (divisible? pos 2)
         number
+        ;;Vid dubblering kan ett två-siffrigt tal skapas, därmed tar vi "sum-of-digits"
         (sum-of-digits (double number)))))
     
 (define person-number?
   (lambda (person.nr)
+   ;;Personnumret verifieras till sant om siffersumman på allt plus kontrollsiffran är delbart med 10. 
    (if (divisible? (+ (last-digit person.nr) (sum-and-apply-to-digits (but-last-digit person.nr) 2-or-1)) 10)
        #t
        #f)))
+                       
