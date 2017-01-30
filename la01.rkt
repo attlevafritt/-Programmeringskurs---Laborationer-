@@ -1,4 +1,6 @@
 #lang racket
+
+(provide (all-defined-out))
 ;;Lab 1
 ;UPPGIFT 1
 
@@ -45,26 +47,18 @@ returneras därmed endast #<procedure: foobar>.|#
         
 #|Iterativt rekursiva lösnigen,
  om n=0 vill vi returnera resultatet.|#   
-(define sum 
-  (lambda (n)
-    (sum-iter n 0)))
-
 (define sum-iter
+  (lambda (n)
+    (sum-iter-counter n 0)))
+
+(define sum-iter-counter
   (lambda (n result)
     #|Räkningen följer substitionsmetoden och 
       uppdaterar resultatet tills n=0|#
     (if (= n 0) 
         result
-        (sum-iter (- n 1)
+        (sum-iter-counter (- n 1)
                   (+ n result)))))
-
-(sum 5)
-
-(trace sum-iter)
-(trace sum-rec)
-
-(printf "uppgift 3")
-(newline)
 
 ;;UPPGIFT 3
 
@@ -77,8 +71,6 @@ nedan (se vår lösning)|#
 (define powers-of-two
   (lambda (n)
     (expt 2 n)))
-
-(powers-of-two 16)
 
 ;;UPPGIFT 4
 #|Låt dela in i tre tänkbara fall. 
@@ -94,9 +86,6 @@ Annars beräknas talet av
       1
       (+ (pascal (- r 1) (- k 1)) 
             (pascal (- r 1) k)))))
-
-(pascal 15 2)
-(pascal 15 3)
 
 ;;UPPGIFT 5 
 #|
@@ -129,7 +118,7 @@ Substitutionsmodellen för (pascal 4 3):
      ;;För (but-last-digit a), där a är ett en-siffrigt tal returneras alltid 0. Därmed kan detta vara vår terminalfall.
     (if (= (but-last-digit n) 0) 
         ;; I slutet tas sista siffran + result. Result är summan av varje siffra som fås när last-digit anropas. 
-        (+ result (last-digit n)) 
+        (+ result (last-digit n))
         ;; Så länge talet består av fler siffror än 1 görs beräknig. Alla siffror än det sista isoleras i varje beräkning, samt det sista
         ;värdet adderas med det "gamla result" för att bilda "det nya result"  
         (sum-of-digits-iter (but-last-digit n) (+ (last-digit n) result)))))
@@ -156,43 +145,35 @@ Substitutionsmodellen för (pascal 4 3):
         #t
         #f)))
 
-(divisible? 3 4)
-
 
 ;;Hjälpproceduren "random-from-to"
 
 (define random-from-to  
   (lambda (f t)
-    (+ f (random t))))
-
+    (+ f (random (- t (- f 1))))))
 
 ;;UPPGIFT 7
 
 ;;Proceduren "simple-sv-num?" 
 (define simple-sv-num?
   (lambda (n d)
-  (if (= (remainder n d) 0)
+    (if (divisible? (sum-of-digits n) d)
       #t
       #f)))
 
+
 ;;Proceduren "make-simple-sv-num"
-(printf "here")
-(newline)
-
-(define make-6-numbers
-  (lambda () 
-  (random-from-to 100000 999999)))
-
 
 (define make-simple-sv-num 
   (lambda (d)
-    (let ([num (random-from-to 100000 900000)]) 
-    (if (= (remainder (sum-of-digits num) d) 0)
+    (let ([num (random-from-to 100000 999999)]) 
+      (if (divisible? (sum-of-digits num) d)
         num
         (make-simple-sv-num d)))))
 
-(make-simple-sv-num 3)
-(simple-sv-num? (make-simple-sv-num 3) 3)
+
+
+
 
 ;UPPGIFT 8 
 ;Låt i vara antalet varv som körs när följande kod körs. 
@@ -200,62 +181,48 @@ Substitutionsmodellen för (pascal 4 3):
 ;(define make-cc-sv-num  (lambda ()
     ;Vi behöver sats för Vi. 
     ;Vi behöver kontroll av i genom antal varv. 
-    ;Om vi har ett i som kontrollerar om den är jämn eller inte. En variabel som växlar mellan 1 och 0. Låter i=1 vara jämnt tal. i=0 ursprung. (if (= i 1)
-       
-#|      
-(define i-each-time 
-  (lambda (i n) 
-    (if (> i 0)
-      (i-each-time (- i 1) (+ n 1))
-      (i-each-time (+ i 1) (+ n 1)))))|#
+    ;Om vi har ett i som kontrollerar om den är jämn eller inte. En variabel som växlar mellan 1 och 0. Låter i=1 vara jämnt tal. i=0 ursprung. (if (= i 1)|#
 
-
-
-    
-#|
-Test av "i-each-time"
  
->(i-each-time 0 0 0)
->(i-each-time 1 1 1)
->(i-each-time 0 2 2)
->(i-each-time 1 3 3)
->(i-each-time 0 4 4)
->(i-each-time 1 5 5)
->(i-each-time 0 6 6)
- 
-|#
-
-             
+;En funktion som returnerar 2*siffran(i det sex-siffriga talet) 
 (define double
   (lambda (n)
     (+ n n)))
-     
+
+;Huvudkoden som har funktionen "make-cc-sv-num" .
 (define make-cc-sv-num 
   (lambda ()
-    (let ([stored (random-from-to 100000 900000)]) 
-        (if (= (remainder 
+    ;låt stored vara det genererande 6-siffriga talet.
+    (let ([stored (random-from-to 100000 999999)]) 
+        (if (divisible? 
+        ;om summan av de viktade talen är delbart med 10 returneras det sex-siffriga-talet. Annars ska ett nytt tal genereras. 
                 (+ (sum-of-digits-cc stored 0 0) 
+                   ;quotient lägger till det första talet, som är ett udda tal.
                    (quotient stored 100000))
                 10)
-               0)
                 stored
             (make-cc-sv-num)))))
 
+
 (define sum-of-digits-cc
+  ;n är det sex-siffriga talet, sum-to-next-last är summan av de viktade siffrorna i talet (förutom det första), i håller koll på varannat tal (om det är jämnt eller ej). i börjar på 0.
   (lambda (n sum-to-next-last i)
+    ;När det sista talet räknas så returneras sum-to-next-last.
     (if (= (but-last-digit n) 0)
         sum-to-next-last
+        ;räkning börjar på det nästa talet (med position 2).
         (if (= i 1)
-            ;endast siffran returneras om den är udda. 
+            ;funk. anropas igen med uppdaterad värde på argumenten.Förkortar från höger till vänster. 
             (sum-of-digits-cc (but-last-digit n) (+ (last-digit n) sum-to-next-last) 0)
-            ;jämna tal. 
+            ;i=1 tolkas som att det är en jämn siffra. 
             (if (< (last-digit n) 5)
                 (sum-of-digits-cc (but-last-digit n) (+ (double (last-digit n)) sum-to-next-last) 1)
                 (sum-of-digits-cc (but-last-digit n) (+ (double (last-digit n)) 1 sum-to-next-last) 1))))))
 
-;;UPPGIFT 9A
 
+;;UPPGIFT 9
 
+;;DEL 9A
 
 (define sum-and-apply-to-digits
   ;;Funktionen tar ett tal samt en procedur "digit-proc"
@@ -266,27 +233,55 @@ Test av "i-each-time"
         (+ (digit-proc (last-digit n) (number-of-digits n))
            (sum-and-apply-to-digits (but-last-digit n) digit-proc)))))
 
-;beräkna antalet siffror.
+;;DEL 9B
+
+;number-of-digits-high-order TESTNING OK! 
 (define just-count-the-positions
   (lambda (num pos)
-    (* 1 pos)))
+  (+ (/ pos pos))))
 
 (define number-of-digits-high-order
   (lambda (number)
-    (sum-and-apply-to-digits (number just-count-the-positions))))
+    (sum-and-apply-to-digits number just-count-the-positions)))
 
-;;Counts the sum.
+;sum-of-digits-high-order Testning OK!
 (define summering
   (lambda (number pos)
-    
-    
-    (sum-and-apply-to-digits (number pos))))
+    number)) 
 
 (define sum-of-digits-high-order
   (lambda (number)
-    (sum-and-apply-to-digits (number summering))))
+    (sum-and-apply-to-digits number summering)))
 
+(define count-viktade-summa 
+  (lambda (number pos)
+    (if (divisible? pos 2)
+      (if (>= number 5)
+          (+ 1 (double number))
+          (double number))
+    number)))
 
+;;make-cc-sv-num-high-order Testning OK! 
+(define make-cc-sv-num-high-order 
+  (lambda ()
+    (let ([number (random-from-to 100000 999999)])
+      (if (divisible? (sum-and-apply-to-digits number count-viktade-summa) 10)
+          number
+          (make-cc-sv-num-high-order)))))
 
-;; 
-;(define make-cc-sv-num-high-order
+      
+;; UPPGIFT 10
+;;Generera 10-siffrigt tal
+
+;En procedur som
+(define 2-or-1
+  (lambda (number pos)
+    (if (divisible? pos 2)
+        number
+        (sum-of-digits (double number)))))
+    
+(define person-number?
+  (lambda (person.nr)
+   (if (divisible? (+ (last-digit person.nr) (sum-and-apply-to-digits (but-last-digit person.nr) 2-or-1)) 10)
+       #t
+       #f)))
