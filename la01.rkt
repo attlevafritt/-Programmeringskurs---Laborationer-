@@ -1,4 +1,3 @@
-
 #lang racket
 ;;Lab 1
 ;UPPGIFT 1
@@ -230,8 +229,6 @@ Test av "i-each-time"
 (define double
   (lambda (n)
     (+ n n)))
-
-
      
 (define make-cc-sv-num 
   (lambda ()
@@ -249,9 +246,47 @@ Test av "i-each-time"
     (if (= (but-last-digit n) 0)
         sum-to-next-last
         (if (= i 1)
+            ;endast siffran returneras om den är udda. 
             (sum-of-digits-cc (but-last-digit n) (+ (last-digit n) sum-to-next-last) 0)
+            ;jämna tal. 
             (if (< (last-digit n) 5)
                 (sum-of-digits-cc (but-last-digit n) (+ (double (last-digit n)) sum-to-next-last) 1)
                 (sum-of-digits-cc (but-last-digit n) (+ (double (last-digit n)) 1 sum-to-next-last) 1))))))
 
-(make-cc-sv-num)
+;;UPPGIFT 9A
+
+
+
+(define sum-and-apply-to-digits
+  ;;Funktionen tar ett tal samt en procedur "digit-proc"
+  (lambda (n digit-proc)
+    ;;Terminalfallet, när sista siffran evalueras ska "digit-proc" returneras.  
+    (if (= (number-of-digits n) 1) 
+        (digit-proc n 1)
+        (+ (digit-proc (last-digit n) (number-of-digits n))
+           (sum-and-apply-to-digits (but-last-digit n) digit-proc)))))
+
+;beräkna antalet siffror.
+(define just-count-the-positions
+  (lambda (num pos)
+    (* 1 pos)))
+
+(define number-of-digits-high-order
+  (lambda (number)
+    (sum-and-apply-to-digits (number just-count-the-positions))))
+
+;;Counts the sum.
+(define summering
+  (lambda (number pos)
+    
+    
+    (sum-and-apply-to-digits (number pos))))
+
+(define sum-of-digits-high-order
+  (lambda (number)
+    (sum-and-apply-to-digits (number summering))))
+
+
+
+;; 
+;(define make-cc-sv-num-high-order
