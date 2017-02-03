@@ -30,13 +30,13 @@
         #t
         #f)))
 
-;UPPG 4 oklar
+;UPPG 4
 (define keep-if
   (lambda (pred input)
-    (if (symbol? (cdr input))
-        input
+    (if (null? input)
+        '()
         (if (pred (car input))
-            (keep-if pred (cdr input))
-            (keep-if pred (cdr (cdr input)))))))
+            (cons (car input) (keep-if pred (cdr input)))
+            (keep-if pred (cdr input))))))
 
 (keep-if even? '(1 2 3 4))
