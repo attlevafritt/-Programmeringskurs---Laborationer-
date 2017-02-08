@@ -1,6 +1,8 @@
 #lang racket
 ;;Laboration 2
 
+(require racket/trace)
+
 ;;UPPGIFT 1
 (define foo (cons 2 3))
 (define bar (list 2 3))
@@ -99,11 +101,22 @@
 ;;UPPGIFT 7 
 ;;Del A 
 
+;;"Klistrar ihop listor"
+(define mend-lists
+  (lambda (list1 list2)
+    (if (null? list1)
+        list2
+        (cons (car list1) (mend-lists (cdr list1) list2)))))
+
 (define reverse-order-rek
   (lambda (list)
     (if (null? list)
-        '() 
-        (cons (cdr list) (
+        '()
+        ;;ta ut varje element och göra en ny lista, sedan menda ihop skiten.
+       (mend-lists (reverser (cdr list)) (cons (car list) '()) ))))
+
+(trace reverser)
+(reverser '(1 2 3 4 5 6 7 8))
 
 
 
