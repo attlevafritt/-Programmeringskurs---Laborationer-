@@ -117,8 +117,7 @@
         ;;ta ut varje element och göra en ny lista, sedan menda ihop skiten.
        (mend-lists (reverse-order-rek (cdr list)) (cons (car list) '()) ))))
 
-(trace reverser)
-(reverser '(1 2 3 4 5 6 7 8))
+
 
 
 
