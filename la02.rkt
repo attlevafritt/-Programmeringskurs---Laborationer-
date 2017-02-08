@@ -108,12 +108,14 @@
         list2
         (cons (car list1) (mend-lists (cdr list1) list2)))))
 
+
+;;linjär rekursiv
 (define reverse-order-rek
   (lambda (list)
     (if (null? list)
         '()
         ;;ta ut varje element och göra en ny lista, sedan menda ihop skiten.
-       (mend-lists (reverser (cdr list)) (cons (car list) '()) ))))
+       (mend-lists (reverse-order-rek (cdr list)) (cons (car list) '()) ))))
 
 (trace reverser)
 (reverser '(1 2 3 4 5 6 7 8))
