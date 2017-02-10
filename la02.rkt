@@ -116,6 +116,18 @@
         '()
         ;;ta ut varje element och göra en ny lista, sedan menda ihop skiten.
        (mend-lists (reverse-order-rek (cdr list)) (cons (car list) '()) ))))
+       
+;;Del B
+;;iterativ rekursiv
+(define reverse-order-iter
+  (lambda (n)
+    (reverse-order-iter2 n (count-list n))))
+
+(define reverse-order-iter2
+  (lambda (n count)
+    (if (= count 0)
+        '()
+        (mend-lists (reverse-order-iter2 (cdr n) (- count 1)) (cons (car n) '())))))
 
 
 
