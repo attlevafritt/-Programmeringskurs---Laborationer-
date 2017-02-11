@@ -116,27 +116,80 @@
         '()
         ;;ta ut varje element och göra en ny lista, sedan menda ihop skiten.
        (mend-lists (reverse-order-rek (cdr list)) (cons (car list) '()) ))))
-       
-;;Del B
-;;iterativ rekursiv
-(define reverse-order-iter
-  (lambda (n)
-    (reverse-order-iter2 n (count-list n))))
 
-(define reverse-order-iter2
-  (lambda (n count)
+
+;;UPPGIFT 8 
+(define map-to-each
+  (lambda (pred list)
+    (if (null? list)
+        '()
+        (cons (pred (car list)) (map-to-each pred (cdr list)))))) 
+
+(map-to-each sqrt '(1 2 3 4 5))
+(map sqrt '(1 2 3 4 5))
+
+;testfall gjort med map ok
+
+;UPPGIFT 9
+
+;;insättning till rätt plats, en redan sorterad lista.  
+(define insert-at-asc-place 
+  (lambda (number the-list)
+    (if (null? the-list)
+        '()
+        (if (> (car the-list) number)
+            (mend-lists (list number) (mend-lists (list (car the-list)) (cdr the-list)))
+            (if (= (count-list the-list) 1)
+                (mend-lists (mend-lists (list (car the-list)) (cdr the-list)) (list number))
+                (mend-lists (list (car the-list)) 
+                            (insert-at-asc-place number (cdr the-list)) ;sparar de element som ignoreras. 
+                            ))))))
+(trace mend-lists)
+   
+(trace insert-at-asc-place)
+
+(insert-at-asc-place 4 '(1 2 3))
+
+;;Huvud proceduren 
+(define insert-sort 
+  (lambda (the-list)
+    (if (null? the-list)
+        '()
+        (if (> (car the-list) (car (cdr the-list)))
+            (insert-at-asc-place (car the-list) (mend-lists (list (car (cdr the-list))) (list (car the-list))))
+            (insert-at-asc-place (car the-list) (mend-lists (list (car the-list)) (list (car (cdr the-list)))))))))
+
+(define insert-sort-version2 
+  (lambda (the-list)
+    (if (null? the-list)
+         '()
+        (let ([store (list (car the-list))])
+          
+          (mend-lists (insert-at-asc-place (car (insert-sort-version2 (cdr the-list))) store) '())))))
+
+(insert-sort-version2 '(8 3 4 2)) 
+
+
+
+
+
+
+
+
+;;NILSENS LÖS
+
+(define insert-sort-Nils
+ (lambda (the-list)
+   (insert-sort-iter the-list (count-list the-list))))
+
+(define insert-sort-iter
+  (lambda (the-list count)
     (if (= count 0)
         '()
-        (mend-lists (reverse-order-iter2 (cdr n) (- count 1)) (cons (car n) '())))))
+        (insert-sort-iter (insert-at-asc-place (car the-list) (cdr the-list)) (- count 1)))))
 
 
-
-
-
-
-
-
-
+(insert-sort-Nils '(2 7 1 4))
 
 
 
