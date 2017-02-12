@@ -176,7 +176,7 @@
   (lambda (the-list counting)
     (if (null? the-list)
         counting
-        (cond [ (pair? (car the-list)) (count-all-iter (cdr the-list) (count-list (car the-list)))]
+        (cond [(pair? (car the-list)) (count-all-iter (cdr the-list) (+ 3 counting))]
               [(atom? (car the-list)) (count-all-iter (cdr the-list) (+ 1 counting))]))))
 
 (trace count-all-iter)
@@ -185,6 +185,9 @@
 
 (count-all 1)
 (count-all (cons 1 2))
+
+
+
     
     
 
