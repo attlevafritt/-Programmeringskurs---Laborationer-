@@ -158,9 +158,34 @@
   (lambda (the-list)
     (insert-sort-iter the-list '())))
 
-(trace insert-sort-iter)
 
 (insert-sort '(1 8 3 4 5 8 10))
+    
+    
+;;UPPGIFT 10
+
+
+(define count-all
+  (lambda (the-list)
+    (cond [(null? the-list) '()]
+          [(atom? the-list) 1]
+          [(not (list? the-list)) 2]
+          [else (count-all-iter the-list 0) ])))
+
+(define count-all-iter
+  (lambda (the-list counting)
+    (if (null? the-list)
+        counting
+        (cond [ (pair? (car the-list)) (count-all-iter (cdr the-list) (count-list (car the-list)))]
+              [(atom? (car the-list)) (count-all-iter (cdr the-list) (+ 1 counting))]))))
+
+(trace count-all-iter)
+(count-all '(1 2 3))              
+(count-all '(1 (two 3 4) 5)) ;returnera 5
+
+(count-all 1)
+(count-all (cons 1 2))
+
     
     
 
