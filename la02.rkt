@@ -186,7 +186,11 @@
 (count-all 1)
 (count-all (cons 1 2))
 
-
+(define count-all
+  (lambda (the-list)
+    (cond ([null? the-list] 0)
+          ([list? the-list] (+ (count-all (car the-list)) (count-all (cdr the-list))) )
+          (else 1))))
 
 
     
