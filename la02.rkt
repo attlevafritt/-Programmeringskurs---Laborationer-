@@ -139,38 +139,28 @@
         (mend-lists (list number) the-list)
         (if (> (car the-list) number)
             (mend-lists (list number) the-list)
-            (if (= (count-list the-list) 1) ;för number som placera på slutet.
+            (if (= (count-list the-list) 1) ;för number som placeras på slutet.
                 (mend-lists the-list (list number))
                 (mend-lists (list (car the-list)) 
                             (insert-at-asc-place number (cdr the-list)) ;sparar de element som ignoreras. 
                             ))))))
 
-
-
 ;;Huvud proceduren 
-(define insert-sort 
-  (lambda (the-list)
-    (if (null? the-list)
-        '()
-        (if (> (car the-list) (car (cdr the-list)))
-            (insert-at-asc-place (car the-list) (mend-lists (list (car (cdr the-list))) (list (car the-list))))
-            (insert-at-asc-place (car the-list) (mend-lists (list (car the-list)) (list (car (cdr the-list)))))))))
-
-(define sorting-iter
+(define insert-sort-iter
   (lambda (the-list result)
-    (if (= (count-list the-list) 0)
+    (if (null? the-list)
         result
-    (sorting-iter (cdr the-list)
-                  (mend-lists (insert-at-asc-place (car the-list) result) '() )
+    (insert-sort-iter (cdr the-list)
+                  (insert-at-asc-place (car the-list) result)
                   ))))
 
-(define sorting
+(define insert-sort
   (lambda (the-list)
-    (sorting-iter the-list '())))
+    (insert-sort-iter the-list '())))
 
-(trace sorting-iter)
+(trace insert-sort-iter)
 
-(sorting '(1 8 3 4 5 8 10))
+(insert-sort '(1 8 3 4 5 8 10))
     
     
 
