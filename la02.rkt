@@ -185,7 +185,6 @@
 
 (count-all 1)
 (count-all (cons 1 2))
-
     
     
 
