@@ -136,19 +136,16 @@
 (define insert-at-asc-place 
   (lambda (number the-list)
     (if (null? the-list)
-        '()
+        (mend-lists (list number) the-list)
         (if (> (car the-list) number)
-            (mend-lists (list number) (mend-lists (list (car the-list)) (cdr the-list)))
-            (if (= (count-list the-list) 1)
-                (mend-lists (mend-lists (list (car the-list)) (cdr the-list)) (list number))
+            (mend-lists (list number) the-list)
+            (if (= (count-list the-list) 1) ;för number som placera på slutet.
+                (mend-lists the-list (list number))
                 (mend-lists (list (car the-list)) 
                             (insert-at-asc-place number (cdr the-list)) ;sparar de element som ignoreras. 
                             ))))))
-(trace mend-lists)
-   
-(trace insert-at-asc-place)
 
-(insert-at-asc-place 4 '(1 2 3))
+
 
 ;;Huvud proceduren 
 (define insert-sort 
@@ -159,37 +156,25 @@
             (insert-at-asc-place (car the-list) (mend-lists (list (car (cdr the-list))) (list (car the-list))))
             (insert-at-asc-place (car the-list) (mend-lists (list (car the-list)) (list (car (cdr the-list)))))))))
 
-(define insert-sort-version2 
+(define sorting-iter
+  (lambda (the-list result)
+    (if (= (count-list the-list) 0)
+        result
+    (sorting-iter (cdr the-list)
+                  (mend-lists (insert-at-asc-place (car the-list) result) '() )
+                  ))))
+
+(define sorting
   (lambda (the-list)
-    (if (null? the-list)
-         '()
-        (let ([store (list (car the-list))])
-          
-          (mend-lists (insert-at-asc-place (car (insert-sort-version2 (cdr the-list))) store) '())))))
+    (sorting-iter the-list '())))
 
-(insert-sort-version2 '(8 3 4 2)) 
+(trace sorting-iter)
 
-
+(sorting '(1 8 3 4 5 8 10))
+    
+    
 
 
-
-
-
-
-;;NILSENS LÖS
-
-(define insert-sort-Nils
- (lambda (the-list)
-   (insert-sort-iter the-list (count-list the-list))))
-
-(define insert-sort-iter
-  (lambda (the-list count)
-    (if (= count 0)
-        '()
-        (insert-sort-iter (insert-at-asc-place (car the-list) (cdr the-list)) (- count 1)))))
-
-
-(insert-sort-Nils '(2 7 1 4))
 
 
 
