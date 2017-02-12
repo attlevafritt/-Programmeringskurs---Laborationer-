@@ -159,7 +159,7 @@
     (insert-sort-iter the-list '())))
 
 
-(insert-sort '(1 8 3 4 5 8 10))
+(insert-sort '(9 3 7 2 5))
     
     
 ;;UPPGIFT 10
@@ -181,10 +181,11 @@
 
 (trace count-all-iter)
 (count-all '(1 2 3))              
-(count-all '(1 (two 3 4) 5)) ;returnera 5
+(count-all '(1 (two 3 4) 5));returnera 5
 
 (count-all 1)
 (count-all (cons 1 2))
+
 
 
 
