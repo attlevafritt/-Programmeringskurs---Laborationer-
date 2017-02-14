@@ -1,6 +1,6 @@
 #lang racket
 ;;Laboration 2
-
+(provide (all-defined-out))
 (require racket/trace)
 
 ;;UPPGIFT 1
@@ -10,7 +10,6 @@
 (define tesco (list 2 bar))
 
 ;;UPPGIFT 2
-
 (define atom?
   (lambda (n)
     (cond ([list? n] #f)
@@ -22,33 +21,26 @@
 
 ;;Huvudproceduren 
 (define count-list
-  (lambda (n)
-    (count-list-iter n 0)))
+  (lambda (the-list)
+    (count-list-iter the-list 0)))
 
 ;;en iterativ lösning som ser till att beräkna
 ;;antalet element i varje lista som matas in. 
 (define count-list-iter
-  (lambda (n result)
-    (if (pair? n)
-        (count-list-iter (cdr n) (+ result 1))
+  (lambda (the-list result)
+    (if (pair? the-list)
+        (count-list-iter (cdr the-list) (+ result 1))
         result)))
 
 ;;Del B
 
 (define count-list-correct?
-  (lambda (n)
-    (if (= (length n) (count-list n))
+  (lambda (the-list)
+    (if (= (length the-list) (count-list the-list))
         #t
         #f)))
 
 ;;UPPGIFT 4 
-
-(define even?
-  (lambda (n)
-    (if (= (remainder n 2) 0)
-        #t
-        #f)))
-
 (define keep-if
   (lambda (pred input)
     (if (null? input)
@@ -57,7 +49,11 @@
             (cons (car input) (keep-if pred (cdr input)))
             (keep-if pred (cdr input))))))
 
-(keep-if even? '(1 2 3 4 5 6))
+
+(define keep-if-correct?
+  (lambda (pred the-list)
+    (equal? (keep-if pred the-list) (filter pred the-list))))
+
 
 ;;UPPGIFT 5
 ;;Del A
@@ -69,34 +65,32 @@
            '()
            (cons (car list) (first-n (- n 1) (cdr list)))))))
 
-(first-n 6 '(3 4 7 2 4 7 8))
-
 
 ;;Del B
-
 (define first-n-correct?
   (lambda (n input)
-    (if (equal? (take input n) (first-n n input))
+    (if (> n (length input))
         #t
-        #f)))
+        (if (equal? (take input n) (first-n n input))
+            #t
+            #f))))
 
 
 (first-n-correct? 6 '(3 4 7 2 4 8)) ;(1)
 (first-n-correct? 3 '(34 2 23 3))
+
 (first-n 8 '(2 3)) ;(3)
 ;; "first-n" returnerar hela listan för n som är längre än listan. "take" kan inte ta ett sådant argument.
 ;;se kör exempel (3)
 
 
 ;;UPPGIFT 6
-
 (define enumerate 
   (lambda (from to step)
     (if (> from to)
         '()
         (cons from (enumerate (+ step from) to step)))))
 
-(enumerate 1 20 5)
 
 ;;UPPGIFT 7 
 ;;Del A 
@@ -117,6 +111,17 @@
         ;;ta ut varje element och göra en ny lista, sedan menda ihop skiten.
        (mend-lists (reverse-order-rek (cdr list)) (cons (car list) '()) ))))
 
+;;iterativ rekursiv
+(define reverse-order-iter
+  (lambda (list)
+    (reverse-order-iter2 list (count-list list))))
+
+(define reverse-order-iter2
+  (lambda (list count)
+    (if (= count 0)
+        '()
+        (mend-lists (reverse-order-iter2 (cdr list) (- count 1)) (cons (car list) '())))))
+
 
 ;;UPPGIFT 8 
 (define map-to-each
@@ -125,8 +130,6 @@
         '()
         (cons (pred (car list)) (map-to-each pred (cdr list)))))) 
 
-(map-to-each sqrt '(1 2 3 4 5))
-(map sqrt '(1 2 3 4 5))
 
 ;testfall gjort med map ok
 
@@ -145,7 +148,12 @@
                             (insert-at-asc-place number (cdr the-list)) ;sparar de element som ignoreras. 
                             ))))))
 
-;;Huvud proceduren 
+;;Huvud proceduren, en iterativ lösning. 
+(define insert-sort
+  (lambda (the-list)
+    (insert-sort-iter the-list '())))
+
+
 (define insert-sort-iter
   (lambda (the-list result)
     (if (null? the-list)
@@ -154,47 +162,77 @@
                   (insert-at-asc-place (car the-list) result)
                   ))))
 
-(define insert-sort
-  (lambda (the-list)
-    (insert-sort-iter the-list '())))
 
-
-(insert-sort '(9 3 7 2 5))
     
     
 ;;UPPGIFT 10
 
-
-(define count-all
-  (lambda (the-list)
-    (cond [(null? the-list) '()]
-          [(atom? the-list) 1]
-          [(not (list? the-list)) 2]
-          [else (count-all-iter the-list 0) ])))
-
-(define count-all-iter
-  (lambda (the-list counting)
-    (if (null? the-list)
-        counting
-        (cond [(pair? (car the-list)) (count-all-iter (cdr the-list) (+ 3 counting))]
-              [(atom? (car the-list)) (count-all-iter (cdr the-list) (+ 1 counting))]))))
-
-(trace count-all-iter)
-(count-all '(1 2 3))              
-(count-all '(1 (two 3 4) 5));returnera 5
-
-(count-all 1)
-(count-all (cons 1 2))
-
+;;beräknar alla element t.o.m. underlistor
 (define count-all
   (lambda (the-list)
     (cond ([null? the-list] 0)
-          ([list? the-list] (+ (count-all (car the-list)) (count-all (cdr the-list))) )
+          ([pair? the-list] (+  (count-all (car the-list)) (count-all (cdr the-list))))
           (else 1))))
 
 
-    
-    
+
+
+
+;;UPPGIFT 11 
+(define occurs?
+  (lambda (arg the-list)
+    (cond ([eqv? arg the-list] #t)
+          ([pair? the-list] (if (or (occurs? arg (car the-list)) (occurs? arg (cdr the-list)))
+                                #t
+                                #f))
+          (else #f))))
+
+
+;;UPPGIFT 12 
+(define subst-all
+  (lambda (s-out s-in the-list)
+    (if (null? the-list) 
+        '()
+        (if (not (atom? (car the-list)));;om det finns underlistor 
+
+            (cons (subst-all s-out s-in (car the-list)) (subst-all s-out s-in (cdr the-list)))
+            (if (eq? (car the-list) s-out)
+                (cons s-in (subst-all s-out s-in (cdr the-list)))
+                (cons (car the-list) (subst-all s-out s-in (cdr the-list))))))))
+
+;;UPPGIFT 13
+(define keep-if-all
+  (lambda (pred list)
+    (cond ([null? list] '())
+          ([atom? list] (if (pred list)
+                            list
+                            '()))
+          ([pair? (car list)] (cons (keep-if-all pred (car list))
+                                    (keep-if-all pred (cdr list))))
+          (else (if (pred (car list))
+                    (cons (car list) (keep-if-all pred (cdr list)))
+                    (keep-if-all pred (cdr list)))))))
+
+
+
+;;UPPGIFT 14 
+(define list-equal?
+  (lambda (list1 list2)
+    (cond [(and (null? list1) (null? list2)) #t]
+          [(or (null? list1) (null? list1)) #f]
+          [(and (atom? list1) (atom? list2)) (eqv? list1 list2)]
+          [(or (atom? list1) (atom? list2)) #f]
+          (else (and (list-equal? (car list1) (car list2))
+                     (list-equal? (cdr list1) (cdr list2)))))))
+
+
+
+
+
+  
+  
+
+
 
 
 
