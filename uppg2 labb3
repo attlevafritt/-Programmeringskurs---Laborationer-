@@ -1,0 +1,72 @@
+#lang racket
+(require racket/serialize)
+(require "database-creator.rkt")
+(require "prettyprinter.rkt")
+(require "flight_representation.rkt")
+
+
+(write-and-create 1000 "test-1000.db")
+
+(define flights
+  ;; The database imported is called "test-1000.db".
+  ;; If you have another database file to import, change this here!
+  (let*
+      ([port (open-input-file "test-1000.db")]
+       [serialized-object (read port)])
+    (close-input-port port)
+    (deserialize serialized-object)))
+
+;; To pretty-print a flight (human-readable), try (print-flight <flight>)
+;; To pretty-print a flight database, try (print-db <flight database>).
+;; Eg (print-db flights)
+
+
+
+
+(define (orgin-flights db orgin)
+   ;; creating an database with all flights with you orgin
+  (define (iter db orgin-db)
+    (cond [(empty-database? db) orgin-db]
+          [(equal? (flight-origin (first-flight db)) orgin)
+           (iter (rest-of-flights db) (add-to-db (first-flight db) orgin-db))]
+          [else (iter (rest-of-flights db) orgin-db)]))
+  (iter db (create-empty-database)))
+
+
+(define (direct-flights db orgin destination)
+  ;;creating a database with all direct flights from you orgin to destination
+  (define (iter db1 new1-db)
+    (cond [(empty-database? db1) new1-db]
+          [(and (equal? (flight-origin (first-flight db1)) orgin)
+                (equal? (flight-destination (first-flight db1)) destination))
+           (iter (rest-of-flights db1) (add-to-db (first-flight db1) new1-db))]
+          [else (iter (rest-of-flights db1) new1-db)]))
+  (iter db (create-empty-database)))
+
+(define (destination-flights db destination)
+  ;; (crating an database with all flights that got your destination 
+  (define (iter db2 destination-db)
+    (cond [(empty-database? db2) destination-db]
+          [(equal? (flight-destination (first-flight db2)) destination) 
+           (iter (rest-of-flights db2) (add-to-db (first-flight db2) destination-db))]
+          [else (iter (rest-of-flights db2) destination-db)]))
+  (iter db (create-empty-database)))
+
+(define (flights-same-destination db destination)
+  ;; 
+  (define (iter db3 database5)
+    (cond[(empty-database? db3) database5]
+         [else (iter (rest-of-flights db3)
+                     (add-to-db (destination-flights db (flight-destination (first-flight db3))) database5))]))
+  (iter db (create-empty-database)))
+
+;skapar en databas av alla indirekta flyg
+(define (indirect-flights from to db)
+  ((orgin-flights db from)
+
+
+(define (flights-from-to orgin destination db)
+  (define (iter db3 flights-from-to-db)
+    ((cond [(empty-database? db3) flights-from-to-db]
+           [else (add-to-db (direct-flights db orgin destination) flights-from-to-db)])))
+  (iter db (create-empty-database)))
