@@ -1,0 +1,16 @@
+;;Uppg 5
+(define count-calls
+  (let ([count 0])
+    (lambda n
+      (cond ([null? n] (set! count (+ count 1)))
+            ([eq? (car n) 'reset] (set! count 0))
+            ([eq? (car n) 'how-many-calls] count)))))
+
+;;Uppg 7
+(define (make-monitored proc)
+  (let ([count 0])
+    (lambda n
+      (cond ([eq? (car n) 'reset] (set! count 0))
+            ([eq? (car n) 'how-many-calls] count)
+            (else (set! count (+ count 1))
+                  (apply proc n))))))
