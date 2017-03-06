@@ -1,3 +1,17 @@
+#lang racket
+(require racket/trace)
+;;UPPGIFT 1 
+;;När den skriver ut ett värde så binds en variabeln till
+;; värdet, värdet skrivs ut. Returneringen av ett värde sker på det sättet 
+;;att procedurer kan returneras och binds inte till ett värde. 
+
+  
+;;UPPGIFT  2 
+
+(define (for-each-element proc list)
+  (unless (null? list) 
+       (begin (proc (car list)) (for-each-element proc (cdr list)))))
+
 ;;Uppg 5
 (define count-calls
   (let ([count 0])
