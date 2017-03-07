@@ -1,41 +1,99 @@
 #lang racket
 (require racket/trace)
-;;UPPGIFT 1 
+;;Uppg. 1 
 ;;När den skriver ut ett värde så binds en variabeln till
 ;; värdet, värdet skrivs ut. Returneringen av ett värde sker på det sättet 
 ;;att procedurer kan returneras och binds inte till ett värde. 
 
   
-;;UPPGIFT  2 
+;;Uppg. 2 
 
 (define (for-each-element proc list)
   (unless (null? list) 
        (begin (proc (car list)) (for-each-element proc (cdr list)))))
 
-;;Uppg 5
+
+;;Uppg. 5
 (define count-calls
   (let ([count 0])
     (lambda n
       (cond ([null? n] (set! count (+ count 1)))
             ([eq? (car n) 'reset] (set! count 0))
             ([eq? (car n) 'how-many-calls] count)))))
+(count-calls)
+(count-calls 'how-many-calls)
+(count-calls 'reset)
 
-;;Uppg 7
+;;Uppg. 7
 (define (make-monitored proc)
   (let ([count 0])
     (lambda n
       (cond ([eq? (car n) 'reset] (set! count 0))
             ([eq? (car n) 'how-many-calls] count)
             (else (set! count (+ count 1))
-                  (apply proc n))))))
-                  
-;;Uppg 10
+(apply proc n))))))
+
+;;Uppg. 9
+
+(define (rev lst)
+  (let 
+      ([res '()]) ;local variable for the result 
+    (define (loop)
+      (cond 
+        [(null? lst) res]
+        [else (set! res (cons (car lst) res))
+              (set! lst (cdr lst))
+              (loop)]))
+    (loop)))
+
+(rev '(1 2 3 4))
+
+
+
+
+;; Uppg. 11 
 (define writer
-  (lambda (text file . arg)
-    (cond ([null? arg] (begin (define name (open-output-file file #:exists 'replace))
-                              (write text name)
-                              (close-output-port name)))
-          ([eq? (car arg) +] (begin (define name (open-output-file file #:exists 'append))
+  (lambda (text filename . arg)
+    (cond  [(null? arg) (begin (define name (open-output-file filename #:exists 'replace)) 
+                               (write text name)
+                               (close-output-port name))]
+           [(eq? (car arg) +) (begin (define name (open-output-file filename #:exists 'append))
                                     (newline name)
                                     (write text name)
-                                    (close-output-port name))))))
+                                    (close-output-port name))])))
+
+
+;; Uppg. 12 
+
+;  (define reader 
+;   (lambda (filename func) 
+;     (begin (define name (open-input-file filename)) 
+;                                (read-line name)
+;                                (close-input-port name))))
+
+
+(define reader 
+  (lambda (filename func)
+    (begin (define name (open-input-file filename))
+           (if (not (eof-object? (read-line name)))
+               (begin (writer (read-line name)) ;nya texten 
+                       filename)
+                (func (read name)))
+               (close-input-port name)
+           )))
+  
+(writer "yeeah" "testing7.data")
+(writer "hurray" "testing7.data")
+(define *lala* (open-input-file "testing7.data"))
+(read-line *lala*)
+(read-line *lala*)
+
+(define *eay* (open-input-file "testing9.data"))
+
+
+
+(writer "Write this in the file:" "example.txt")
+(writer "Challange accepted!" "example.txt" +)
+(reader "example.txt"
+(lambda (text-line)
+(printf "~a~n" text-line)))
