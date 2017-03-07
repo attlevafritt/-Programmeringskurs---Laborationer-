@@ -28,3 +28,14 @@
             ([eq? (car n) 'how-many-calls] count)
             (else (set! count (+ count 1))
                   (apply proc n))))))
+                  
+;;Uppg 10
+(define writer
+  (lambda (text file . arg)
+    (cond ([null? arg] (begin (define name (open-output-file file #:exists 'replace))
+                              (write text name)
+                              (close-output-port name)))
+          ([eq? (car arg) +] (begin (define name (open-output-file file #:exists 'append))
+                                    (newline name)
+                                    (write text name)
+                                    (close-output-port name))))))
