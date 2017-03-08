@@ -1,9 +1,8 @@
 #lang racket
 (require racket/trace)
 ;;Uppg. 1 
-;;När den skriver ut ett värde så binds en variabeln till
-;; värdet, värdet skrivs ut. Returneringen av ett värde sker på det sättet 
-;;att procedurer kan returneras och binds inte till ett värde. 
+#|Skillnaden mellan att skriva ut ett värde och att returnera ett värde är att det senare är en "biprodukt" egenskap hos scheme , som sker automatiskt när kod returnerar ett värde.  
+När ett värde skrivs ut som exempelvis display-proceduren ser till sker skrivs ett värde ut till skärmen för att anvädaren ska se. |#
 
   
 ;;Uppg. 2 
@@ -51,7 +50,7 @@
 
 
 
-;; Uppg. 10
+;; Uppg. 10 
 (define writer
   (lambda (text filename . arg)
     (cond  [(null? arg) (begin (define name (open-output-file filename #:exists 'replace)) 
@@ -63,37 +62,20 @@
                                     (close-output-port name))])))
 
 
-;; Uppg. 11
-
-;  (define reader 
-;   (lambda (filename func) 
-;     (begin (define name (open-input-file filename)) 
-;                                (read-line name)
-;                                (close-input-port name))))
-
+;; Uppg. 11 
 
 (define reader 
   (lambda (filename func)
-    (begin (define name (open-input-file filename))
-           (if (not (eof-object? (read-line name)))
-               (begin (writer (read-line name)) ;nya texten 
-                       filename)
-                (func (read name)))
-               (close-input-port name)
-           )))
-  
-(writer "yeeah" "testing7.data")
-(writer "hurray" "testing7.data")
-(define *lala* (open-input-file "testing7.data"))
-(read-line *lala*)
-(read-line *lala*)
-
-(define *eay* (open-input-file "testing9.data"))
+    (define name (open-input-file filename))
+    (define (loop)
+      (let ((var (read-line name)))
+        (if (eof-object? var)
+            (close-input-port name)
+            (begin (func var) (loop)))))
+    (loop)))
 
 
 
-(writer "Write this in the file:" "example.txt")
-(writer "Challange accepted!" "example.txt" +)
-(reader "example.txt"
-(lambda (text-line)
-(printf "~a~n" text-line)))
+
+
+
