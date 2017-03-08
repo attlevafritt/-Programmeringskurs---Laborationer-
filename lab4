@@ -51,7 +51,7 @@
 
 
 
-;; Uppg. 11 
+;; Uppg. 10
 (define writer
   (lambda (text filename . arg)
     (cond  [(null? arg) (begin (define name (open-output-file filename #:exists 'replace)) 
@@ -63,7 +63,7 @@
                                     (close-output-port name))])))
 
 
-;; Uppg. 12 
+;; Uppg. 11
 
 ;  (define reader 
 ;   (lambda (filename func) 
